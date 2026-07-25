@@ -11,9 +11,13 @@ from langchain_community.vectorstores import FAISS
 # Configuración del logger para este módulo específico
 logger = logging.getLogger(__name__)
 
-def cargar_documentos(data_dir: str = "./content/"):
+# Definición de ruta absoluta para asegurar estabilidad en producción/nube
+BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_DATA_DIR = BASE_DIR / "content"
+
+def cargar_documentos(data_dir: Path = DEFAULT_DATA_DIR):
     """
-    Función encargada de escanear la carpeta de conocimiento,
+    Función encargada de escanear la carpeta de conocimiento usando rutas absolutas,
     cargar archivos PDF y CSV, y prepararlos como documentos de LangChain.
     """
     docs = []
@@ -37,14 +41,14 @@ def cargar_documentos(data_dir: str = "./content/"):
     for n in carpeta.glob("*.csv"):
         try:
             df = pd.read_csv(str(n), encoding="utf-8")
-            # 🧹 Limpieza defensiva para borrar columnas vacías tipo "Unnamed"
+            # Limpieza defensiva para borrar columnas vacías tipo "Unnamed"
             df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
             for index, row in df.iterrows():
                 texto_fila = " | ".join([f"{col}: {val}" for col, val in row.items() if pd.notna(val)])
                 doc_csv = Document(
                     page_content=f"Datos del producto de Nexus Store ({n.name}): {texto_fila}",
-                    metadata={"file_path": f"{data_dir}{n.name}"}
+                    metadata={"file_path": str(n)}
                 )
                 docs.append(doc_csv)
             logger.info(f"CSV cargado con éxito: {n.name}")
