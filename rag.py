@@ -45,9 +45,15 @@ def cargar_documentos(data_dir: Path = DEFAULT_DATA_DIR):
             df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
             for index, row in df.iterrows():
-                texto_fila = " | ".join([f"{col}: {val}" for col, val in row.items() if pd.notna(val)])
+                cols_lower = [str(c).lower() for c in df.columns]
+                if any('pregunta' in c for c in cols_lower) and any('respuesta' in c for c in cols_lower):
+                    p_col = [c for c in df.columns.astype(str) if 'pregunta' in c.lower()][0]
+                    r_col = [c for c in df.columns.astype(str) if 'respuesta' in c.lower()][0]
+                    contenido_doc = f"Pregunta frecuente en Nexus Store: {row[p_col]} Respuesta oficial: {row[r_col]}"
+                else:
+                    contenido_doc = f"Catálogo y productos disponibles en Nexus Store ({n.name}): " + " | ".join([f"{col}: {val}" for col, val in row.items() if pd.notna(val)])
                 doc_csv = Document(
-                    page_content=f"Datos del producto de Nexus Store ({n.name}): {texto_fila}",
+                    page_content=contenido_doc,
                     metadata={"file_path": str(n)}
                 )
                 docs.append(doc_csv)
