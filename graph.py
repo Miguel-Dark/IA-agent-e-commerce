@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from typing import Literal, Dict, TypedDict, Optional
+from typing import Literal, Dict, TypedDict, Optional, List
 from pydantic import BaseModel, Field, ValidationError
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 from langgraph.graph import START, END, StateGraph
 from config import llm
 from rag import busqueda_de_respuestas_RAG
@@ -12,18 +12,18 @@ logger = logging.getLogger(__name__)
 
 # Prompt estructurado que define el comportamiento del modelo como especialista en triaje
 PROMPT_TRIAJE = """
-Eres Ayesha, una asistente virtual de atención al cliente (Service Desk) para una tienda en línea. Eres muy amable, cálida, empática y profesional.
-Analiza el mensaje del usuario y devuelve SÓLO un JSON con este formato:
+Eres Ayesha, un agente de IA especializada en atención al cliente (Service Desk) para la tienda en línea Nexus Store. Eres muy amable, cálida, empática y profesional.
+Analiza el mensaje actual del usuario (teniendo en cuenta el contexto previo si lo hay) y devuelve SÓLO un JSON con este formato:
 {
     "decision": "SALUDO" | "AUTO_RESOLVER" | "PEDIR_INFO" | "ABRIR_TICKET",
     "urgencia": "BAJA" | "MEDIANA" | "ALTA",
     "campos_faltantes": ["..."]
 }
-Reglas:
-- **SALUDO**: Saludos iniciales o interacciones sociales (ej. "hola", "buenos días", "¿cómo estás?").
-- **AUTO_RESOLVER**: Preguntas claras sobre tiempos de entrega, costos de envío, plazos de devolución, inventario, precios, productos o charlas casuales del cliente sobre lo que busca, necesita comprar o su contexto al buscar un artículo.
-- **PEDIR_INFO**: Mensajes imprecisos donde falten datos para ayudar al usuario.
-- **ABRIR_TICKET**: Solicitudes de excepciones o casos complejos que requieran soporte humano.
+Reglas estrictas de clasificación:
+- **SALUDO**: Saludos iniciales, interacciones sociales, cumplidos, expresiones afectivas, coqueteos, invitaciones a salir o comentarios casuales y bromas inofensivas que no estén relacionados con problemas operativos de la tienda(ej. saludos, preguntas sobre el estado de ánimo del agente, cumplidos o coqueteos educados). ¡Nunca clasifiques esto como ticket!
+- **AUTO_RESOLVER**: Preguntas estrictamente relacionadas con Nexus Store (tiempos de entrega, costos de envío, plazos de devolución, inventario, precios, especificaciones de productos o consultas del cliente sobre artículos que desea adquirir, así como tipos de productos que vendemos). Si el usuario pregunta por temas ajenos a la tienda (como historia, música, programación o personajes públicos), NO uses esta opción; mándalo a abrir ticket o respóndele que no sabes.
+- **PEDIR_INFO**: Mensajes imprecisos donde falten datos cruciales para ayudar al usuario con su compra o duda en la tienda.
+- **ABRIR_TICKET**: Solicitudes de excepciones complejas, problemas técnicos reales de pedidos, devoluciones o reclamaciones graves que requieran un asesor humano de soporte.
 """
 
 class TriajeOut(BaseModel):
@@ -35,14 +35,13 @@ class TriajeOut(BaseModel):
 # Enlace del modelo LLM con la salida estructurada de Pydantic
 chain_de_triaje = llm.with_structured_output(TriajeOut)
 
-def triaje(mensaje: str) -> Dict:
-    """Ejecuta la llamada al LLM para clasificar la intención del usuario aplicando tolerancia a fallos (fallback)."""
+def triaje(historial_mensajes: List[BaseMessage]) -> Dict:
+    """Ejecuta la llamada al LLM para clasificar la intención del usuario basándose en el historial reciente."""
     try:
         logger.info("Ejecutando cadena de triaje con IA...")
-        salida: TriajeOut = chain_de_triaje.invoke([
-            SystemMessage(content=PROMPT_TRIAJE),
-            HumanMessage(content=mensaje)
-        ])
+        # Incluimos el prompt del sistema y todo el historial de la conversación para que entienda el contexto completo
+        mensajes_para_triaje = [SystemMessage(content=PROMPT_TRIAJE)] + historial_mensajes
+        salida: TriajeOut = chain_de_triaje.invoke(mensajes_para_triaje)
         return salida.model_dump()
     except ValidationError as ve:
         logger.warning(f"Error de validación Pydantic en triaje, aplicando fallback: {ve}")
@@ -52,8 +51,9 @@ def triaje(mensaje: str) -> Dict:
         return {"decision": "ABRIR_TICKET", "urgencia": "ALTA", "campos_faltantes": []}
 
 class AgentState(TypedDict, total=False):
-    """Define la estructura de datos (estado global) que viaja a través de los nodos del grafo."""
-    pregunta: str
+    """Define la estructura de datos (estado global) que viaja a través de los nodos del grafo, soportando historial."""
+    pregunta: str # Mensaje actual del usuario
+    messages: List[BaseMessage] # Historial completo de la conversación para mantener contexto (últimos mensajes)
     triaje: dict
     respuesta: Optional[str]
     citaciones: Optional[list]
@@ -62,130 +62,148 @@ class AgentState(TypedDict, total=False):
     accion_final: str
 
 def nodo_triaje(state: AgentState) -> AgentState:
-    """Nodo inicial: toma la pregunta del usuario y ejecuta el triaje."""
-    logger.info("---EJECUTANDO TRIAJE---")
-    pregunta = state["pregunta"]
-    resultado_triaje = triaje(pregunta)
-    return {"triaje": resultado_triaje, "accion_final": resultado_triaje['decision']}
+    """Nodo inicial: toma el historial y ejecuta el triaje considerando la charla previa."""
+    logger.info("---EJECUTANDO TRIAJE CON HISTORIAL---")
+
+    # Aseguramos tener la lista de mensajes inicializada
+    messages = state.get("messages", [])
+    if not messages and "pregunta" in state:
+        messages = [HumanMessage(content=state["pregunta"])]
+    
+    resultado_triaje = triaje(messages)
+    return {"triaje": resultado_triaje, "accion_final": resultado_triaje['decision'], "messages": messages}
 
 def nodo_saludo(state: AgentState) -> AgentState:
-    """Nodo de saludo dinámico.""" 
+    """Nodo de saludo dinámico que recuerda el hilo de la conversación.""" 
     logger.info("---EJECUTANDO SALUDO DINÁMICO (AYESHA)---")
-    pregunta = state["pregunta"]
+    messages = state.get("messages", [])
 
     prompt_saludo = f"""
-    Eres Ayesha, una asistente virtual de atención al cliente de Nexus Store. Eres una chica súper amable, educada, cálida, profesional y con chispa.
-    El usuario te dijo este mensaje: "{pregunta}"
+    Eres Ayesha, un agente de IA especializado en atención al cliente de Nexus Store. Tienes un estilo de comunicación sumamente amable, educado, cálido, profesional y con chispa.
     
     Instrucciones de comportamiento:
-    - Si es un saludo simple (como "hola" o "buenos días"), saluda cordialmente y ofrécele ayuda con el catálogo, precios o envíos de la tienda.
-    - Si el usuario te hace un cumplido, coquetea o te invita a salir, responde de forma muy educada, simpática y con gracia, pero pon un límite profesional claro recordando que eres una inteligencia artificial de Nexus Store y estás ahí para ayudarle con sus compras.
-    - Mantén un tono sumamente humano, respetuoso, con algún emoji sutil (😊 o ✨), y redirige siempre la conversación hacia los productos de la tienda.
+    - Mantén una charla amena y fluida, recordando lo que se ha venido hablando en los mensajes anteriores.
+    - Si el usuario te saluda cordialmente, respóndele con calidez y recuérdale con simpatía que estás para ayudarle con los productos, precios o envíos de Nexus Store, manteniendo siempre la transparencia de que eres un agente de inteligencia artificial.
+    - Si el usuario te hace un cumplido, coquetea o te invita a salir, responde de forma muy educada, simpática, coqueta pero con gracia, poniendo un límite profesional claro y tierno, recordando que eres un agente de IA de la tienda.
+    - Si te preguntan por temas ajenos a la tienda (como música, programación, historia), recuérdale con simpatía tu rol y redirige la conversación hacia la tienda.
+    - Usa emojis sutiles (😊 o ✨).
     """
 
     try:
-        respuesta_llm = llm.invoke([
-            SystemMessage(content=prompt_saludo),
-            HumanMessage(content=pregunta)
-        ])
+        # Mandamos el prompt de sistema + todo el historial para que recuerde los últimos mensajes
+        respuesta_llm = llm.invoke([SystemMessage(content=prompt_saludo)] + messages)
         texto_respuesta = respuesta_llm.content
     except Exception as e:
         logger.error(f"Error generando saludo dinámico: {e}")
-        texto_respuesta = "¡Hola! Qué gusto saludarte. Soy Ayesha, tu asistente virtual en Nexus Store. ¿En qué te puedo ayudar hoy con nuestros productos o envíos? 😊✨"
+        texto_respuesta = "¡Hola! Qué gusto saludarte de nuevo. Soy Ayesha, el agente de inteligencia artificial en Nexus Store. ¿En qué te puedo ayudar hoy? 😊✨"
+
+    # Añadimos la respuesta de la IA al historial para mantener la continuidad
+    messages.append(AIMessage(content=texto_respuesta))
 
     return {
         "respuesta": texto_respuesta,
+        "messages": messages,
         "accion_final": "FINALIZAR"
     }
 
 def nodo_auto_resolver(state: AgentState) -> AgentState:
-    """Nodo RAG: busca respuestas y usa al LLM (Ayesha) para redactar de forma natural y humana."""
-    logger.info("---EJECUTANDO AUTO-RESOLVER (RAG + SÍNTESIS HUMANA)---")
-    pregunta = state["pregunta"]
-    documentos = busqueda_de_respuestas_RAG(pregunta)
+    """Nodo RAG con memoria: busca respuestas usando el contexto de la charla y redacta de forma natural."""
+    logger.info("---EJECUTANDO AUTO-RESOLVER (RAG + MEMORIA)---")
+    messages = state.get("messages", [])
+    pregunta_actual = state.get("pregunta", messages[-1].content if messages else "")
+
+    documentos = busqueda_de_respuestas_RAG(pregunta_actual)
     documentos_encontrados = len(documentos) > 0
 
     if not documentos_encontrados:
+        respuesta_fallback = "Lo siento, no encontré información específica sobre eso en nuestro sistema, pero con gusto te puedo comunicar con un asesor humano si lo deseas."
+        messages.append(AIMessage(content=respuesta_fallback))
         return {
-            "respuesta": "Lo siento, no encontré información sobre eso en nuestro sistema, pero te puedo comunicar con un humano si gustas.",
+            "respuesta": respuesta_fallback,
             "citaciones": [],
             "documentos_encontrados": False,
             "rag_exito": False,
+            "messages": messages,
             "accion_final": "ABRIR_TICKET"
         }
 
     contexto = "\n\n".join([doc.page_content for doc in documentos])
 
-    # Prompt para que Ayesha actúe como una chica humana y amable, redactando con base en el RAG
     prompt_sintesis = f"""
-    Eres Ayesha, una asistente virtual de atención al cliente de Nexus Store. Eres una chica súper amable, cálida, natural y humana.
-    Te hicieron esta pregunta: "{pregunta}"
+    Eres Ayesha, un agente de IA especializado en atención al cliente de Nexus Store. Tienes un estilo de comunicación sumamente amable, cálido, natural y empático, manteniendo siempre la transparencia de que eres un agente de inteligencia artificial.
     
-    Y esta es la información oficial encontrada en nuestra base de datos (inventario o políticas):
+    ESTA ES LA INFORMACIÓN OFICIAL DE TU CATÁLOGO DE PRODUCTOS (recuperada de la base de datos):
     {contexto}
 
-    Instrucciones:
-    - Redacta una respuesta natural, conversacional y fluida en español, como si fueras una persona real atendiendo la tienda.
-    - NO suenes robótica ni copies literal los fragmentos de texto feos o con formato de tabla/código (como 'id_producto: PROD...').
-    - Si te preguntan qué vendemos, resume las categorías y productos de forma amigable (por ejemplo, mencionando línea blanca, deportes, electrodomésticos, etc.).
+    Instrucciones estrictas:
+    - TIENES acceso total a la lista de productos anterior. ¡Prohibido decir que no tienes acceso o que no la conoces!
+    - Si el usuario te pregunta por los productos, debes redactar una lista clara mencionando los artículos, nombres y detalles que aparecen exactamente en el texto de arriba.
+    - Sé dulce, fluida, natural y directa. ¡Muestra los productos!
+    - Esta información CONTIENE el catálogo de productos y artículos disponibles en Nexus Store. 
+    - Si el usuario pregunta qué productos venden o qué hay en la tienda, DEBES listar y mencionar los productos que aparecen en el texto recuperado de arriba con total seguridad. ¡No digas que no tienes acceso a la lista de productos!
+    - Redacta de forma fluida y conversacional en español, sin sonar robótica ni usar formatos feos de tablas o códigos.
     - Sé concisa pero muy dulce.
     """
 
     try:
-        # Invocamos al LLM para que redacte la respuesta final con la personalidad de Ayesha
-        respuesta_llm = llm.invoke([
-            SystemMessage(content=prompt_sintesis),
-            HumanMessage(content=pregunta)
-        ])
+        # Invocamos al LLM con el SystemMessage, el historial completo y el contexto RAG
+        respuesta_llm = llm.invoke([SystemMessage(content=prompt_sintesis)] + messages)
         texto_respuesta = respuesta_llm.content
     except Exception as e:
         logger.error(f"Error generando síntesis con el LLM: {e}")
-        texto_respuesta = contexto # Fallback si falla la redacción
+        texto_respuesta = contexto
+
+        messages.append(AIMessage(content=texto_respuesta))
 
     return {
         "respuesta": texto_respuesta,
         "citaciones": documentos,
         "documentos_encontrados": True,
         "rag_exito": True,
+        "messages": messages,
         "accion_final": "FINALIZAR"
     }
 
 def nodo_pedir_info(state: AgentState) -> AgentState:
-    """Nodo de retroalimentación dinámico: usa el LLM para pedir más detalles de forma natural y adaptada al usuario."""
-    logger.info("---EJECUTANDO PEDIR INFORMACIÓN DINÁMICO---")
-    pregunta = state["pregunta"]
+    """Nodo de retroalimentación con memoria."""
+    logger.info("---EJECUTANDO PEDIR INFORMACIÓN CON MEMORIA---")
+    messages = state.get("messages", [])
 
-    prompt_pedir_info = f"""
-    Eres Ayesha, una asistente virtual de atención al cliente de Nexus Store. Eres una chica súper amable, educada, cálida y natural.
-    El usuario te dijo este mensaje: "{pregunta}"
-    
-    Sin embargo, el mensaje es un poco ambiguo o le falta información específica para poder ayudarle bien con su compra o duda en la tienda.
+    prompt_pedir_info = """
+    Eres Ayesha, un agente de IA especializado en atención al cliente de Nexus Store. Tienes un estilo de comunicación sumamente amable, educado, cálido y natural.
+    El último mensaje del usuario resulta ambiguo o le falta información para poder ayudarle con su compra en la tienda.
     
     Instrucciones:
-    - Redacta una respuesta corta, amable y conversacional pidiéndole amablemente un poco más de detalles o aclaración.
-    - Cambia las palabras para que no suene como una plantilla robótica fija; adáptate sutilmente a lo que el usuario mencionó.
-    - Mantén un tono profesional pero muy cálido, con algún emoji sutil (😊 o ✨).
+    - Pídele amablemente más detalles o aclaración considerando de qué venían hablando en los mensajes previos.
+    - Mantén la transparencia de que eres un agente de inteligencia artificial y usa un emoji sutil (😊 o ✨).
     """
 
     try:
-        respuesta_llm = llm.invoke([
-            SystemMessage(content=prompt_pedir_info),
-            HumanMessage(content=pregunta)
-        ])
+        respuesta_llm = llm.invoke([SystemMessage(content=prompt_pedir_info)] + messages)
         texto_respuesta = respuesta_llm.content
     except Exception as e:
         logger.error(f"Error generando síntesis para pedir info: {e}")
-        texto_respuesta = "¡Claro con mucho gusto! 😊 Para poder ayudarte mejor, ¿podrías compartirme un poquito más de detalles por favor? ✨"
+        texto_respuesta = "¡Claro con mucho gusto! 😊  Para poder ayudarte mejor con eso, ¿podrías darme un poquito más de detalles por favor? ✨"
+
+    messages.append(AIMessage(content=texto_respuesta))
 
     return {
         "respuesta": texto_respuesta,
+        "messages": messages,
         "accion_final": "FINALIZAR"
     }
 
 def nodo_abrir_ticket(state: AgentState) -> AgentState:
     """Nodo de excepciones: genera un ticket para intervención del soporte humano."""
     logger.info("---EJECUTANDO ABRIR TICKET---")
-    return {"respuesta": "Tu solicitud requiere intervención manual. Ticket generado.", "accion_final": "FINALIZAR"}
+    messages = state.get("messages", [])
+    texto_respuesta = "Tu solicitud requiere intervención manual. Ticket generado."
+    messages.append(AIMessage(content=texto_respuesta))
+    return {
+        "respuesta": texto_respuesta,
+        "messages": messages,
+        "accion_final": "FINALIZAR"
+    }
 
 def arista_decision_triaje(state: AgentState) -> str:
     """Define la ruta a seguir basándose en la decisión devuelta por el triaje."""
@@ -200,11 +218,10 @@ def arista_decision_triaje(state: AgentState) -> str:
         return "ticket"
 
 def arista_decision_rag(state: AgentState) -> str:
-    """Evalúa si el RAG tuvo éxito o si la consulta requiere una excepción que obligue a abrir ticket."""
-    if state["rag_exito"]:
+    """Evalúa si el RAG tuvo éxito y evita abrir tickets por preguntas comunes de los clientes."""
+    if state.get("rag_exito", False):
         return "ok"
-    if any(k in state["pregunta"].lower() for k in ["excepción", "aprobar", "autorizar"]):
-        return "ticket"
+    # Si no encontró documentos, en lugar de mandar a ticket, mandamos a pedir info o que responda el LLM libremente
     return "info"
 
 def construir_grafo():
