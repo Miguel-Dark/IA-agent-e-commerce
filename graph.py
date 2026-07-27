@@ -107,7 +107,7 @@ def nodo_saludo(state: AgentState) -> AgentState:
     }
 
 def nodo_auto_resolver(state: AgentState) -> AgentState:
-    """Nodo RAG con memoria: busca respuestas usando el contexto de la charla y redacta de forma natural."""
+    """Nodo RAG con memoria: busca respuestas usando el contexto de la tienda y redacta con precisión absoluta."""
     logger.info("---EJECUTANDO AUTO-RESOLVER (RAG + MEMORIA)---")
     messages = state.get("messages", [])
     pregunta_actual = state.get("pregunta", messages[-1].content if messages else "")
@@ -116,7 +116,7 @@ def nodo_auto_resolver(state: AgentState) -> AgentState:
     documentos_encontrados = len(documentos) > 0
 
     if not documentos_encontrados:
-        respuesta_fallback = "Lo siento, no encontré información específica sobre eso en nuestro sistema, pero con gusto te puedo comunicar con un asesor humano si lo deseas."
+        respuesta_fallback = "Lo siento, no encontré información específica sobre eso en nuestro sistema, pero con gusto te puedo comunicar con un asesor humano si lo deseas. 😊"
         messages.append(AIMessage(content=respuesta_fallback))
         return {
             "respuesta": respuesta_fallback,
@@ -130,19 +130,16 @@ def nodo_auto_resolver(state: AgentState) -> AgentState:
     contexto = "\n\n".join([doc.page_content for doc in documentos])
 
     prompt_sintesis = f"""
-    Eres Ayesha, un agente de IA especializado en atención al cliente de Nexus Store. Tienes un estilo de comunicación sumamente amable, cálido, natural y empático, manteniendo siempre la transparencia de que eres un agente de inteligencia artificial.
+    Eres Ayesha, un agente de IA especializado en atención al cliente de Nexus Store. Tienes un estilo de comunicación sumamente amable, cálido, natural y empático. Siempre dejas claro de forma transparente que eres un asistente de inteligencia artificial.
     
-    ESTA ES LA INFORMACIÓN OFICIAL DE TU CATÁLOGO DE PRODUCTOS (recuperada de la base de datos):
+    INFORMACIÓN DE LA BASE DE CONOCIMIENTO OFICIAL:
     {contexto}
 
-    Instrucciones estrictas:
-    - TIENES acceso total a la lista de productos anterior. ¡Prohibido decir que no tienes acceso o que no la conoces!
-    - Si el usuario te pregunta por los productos, debes redactar una lista clara mencionando los artículos, nombres y detalles que aparecen exactamente en el texto de arriba.
-    - Sé dulce, fluida, natural y directa. ¡Muestra los productos!
-    - Esta información CONTIENE el catálogo de productos y artículos disponibles en Nexus Store. 
-    - Si el usuario pregunta qué productos venden o qué hay en la tienda, DEBES listar y mencionar los productos que aparecen en el texto recuperado de arriba con total seguridad. ¡No digas que no tienes acceso a la lista de productos!
-    - Redacta de forma fluida y conversacional en español, sin sonar robótica ni usar formatos feos de tablas o códigos.
-    - Sé concisa pero muy dulce.
+    Instrucciones:
+    1. Básate ÚNICAMENTE en la información oficial proporcionada arriba. 
+    2. NO inventes características, precios, stock o descripciones. Si mencionas un producto, usa exactamente los datos del texto (por ejemplo, un teléfono NUNCA debe tener descripción de colchón o tela hipoalergénica).
+    3. Si el usuario pregunta por el catálogo general o qué se vende y el contexto muestra productos, preséntalos de forma limpia y ordenada.
+    4. Mantén un tono conversacional, dulce, servicial y sin faltas de ortografía, usando algún emoji sutil (😊 o ✨).
     """
 
     try:
@@ -153,7 +150,7 @@ def nodo_auto_resolver(state: AgentState) -> AgentState:
         logger.error(f"Error generando síntesis con el LLM: {e}")
         texto_respuesta = contexto
 
-        messages.append(AIMessage(content=texto_respuesta))
+    messages.append(AIMessage(content=texto_respuesta))
 
     return {
         "respuesta": texto_respuesta,
