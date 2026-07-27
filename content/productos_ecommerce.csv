@@ -1,36 +1,36 @@
 ﻿id_producto,nombre,categoria, precio_mxn ,stock_disponible,descripcion
-PROD-101,"Pantalla Smart TV LED 55"" 4K UHD",Línea Blanca y Electrónica," $8,499.00 ",18,"Televisor inteligente con resolución 4K,  HDR10 y aplicaciones de streaming integradas."
-PROD-102,Refrigerador Top Mount 11 Pies,Línea Blanca y Electrónica," $7,299.00 ",12,Refrigerador ahorrador de energía con tecnología de enfriamiento rápido y amplio espacio interior.
-PROD-103,Lavadora Automática 20 kg,Línea Blanca y Electrónica," $9,899.00 ",8,Lavadora de carga superior con ciclos automáticos de lavado y sistema de centrifugado avanzado.
-PROD-104,Estufa de Gas de 30 Pulgadas,Línea Blanca y Electrónica," $6,499.00 ",10,"Estufa con encendido electrónico,  horno con ventana panorámica y quemadores de alta eficiencia."
-PROD-105,Consola de Videojuegos Next-Gen 1TB,Entretenimiento," $11,999.00 ",25,Consola de última generación para juegos en máxima resolución y alta tasa de cuadros por segundo.
-PROD-106,Barra de Sonido Bluetooth con Subwoofer,Entretenimiento," $2,899.00 ",30,Sistema de sonido envolvente con conectividad inalámbrica y puertos ópticos y auxiliares.
-PROD-107,"Laptop Gamer 15.6"" RTX 4050",Tecnología," $21,999.00 ",15,"Laptop de alto rendimiento con tarjeta gráfica dedicada,  16GB RAM y procesador veloz para gaming y diseño."
-PROD-108,Smartphone 128GB Cámara Dual,Telefonía," $5,499.00 ",45,Teléfono inteligente liberado con pantalla AMOLED de 6.5 pulgadas y batería de larga duración.
-PROD-109,Audífonos In-Ear Inalámbricos TWS,Telefonía, $899.00 ,70,Audífonos manos libres con estuche de carga portátil y cancelación pasiva de ruido.
-PROD-110,Reloj Inteligente Smartwatch Sport,Tecnología," $1,299.00 ",50,"Monitor de actividad física,  ritmo cardíaco,  oxígeno en sangre y notificaciones de llamadas."
-PROD-111,Colchón Matrimonial Confort Plus,Muebles y Hogar," $4,199.00 ",14,Colchón ortopédico con espuma de alta densidad y tela hipoalergénica para descanso óptimo.
-PROD-112,Sala Modular Esquinera en L,Muebles y Hogar," $8,999.00 ",6,Sala tapizada en tactopiel de fácil limpieza con estructura de madera de pino reforzada.
-PROD-113,Comedor Minimalista 6 Sillas,Muebles y Hogar," $6,799.00 ",9,Juego de comedor con mesa de madera MDF y sillas tapizadas ergonómicas.
-PROD-114,Ropero / Clóset de 3 Puertas con Espejo,Muebles y Hogar," $5,199.00 ",11,"Clóset espacioso con cajones internos,  tubo para colgar ropa y espejo de cuerpo entero."
-PROD-115,Licuadora de Alta Potencia 10 Velocidades,Electrodomésticos, $999.00 ,40,Licuadora con vaso de vidrio resistente a impactos y cuchillas de acero inoxidable.
-PROD-116,Cafetera Automática para Expresso,Electrodomésticos," $1,899.00 ",25,Cafetera con bomba de presión de 15 bares y espumador de leche integrado.
-PROD-117,Horno de Microondas 1.1 Pies Cúbicos,Electrodomésticos," $2,199.00 ",30,"Microondas con panel digital,  opciones de cocinado rápido y función de descongelamiento."
-PROD-118,Plancha de Vapor con Suela Cerámica,Electrodomésticos, $599.00 ,50,"Plancha con golpe de vapor vertical,  sistema antigoteo y control de temperatura ajustable."
-PROD-119,"Ventilador de Pedestal Oscilante 18""",Hogar y Clima, $849.00 ,60,Ventilador de 3 velocidades con altura ajustable y rejilla de seguridad metálica.
-PROD-120,Calentador de Agua de Paso Instantáneo,Hogar y Clima," $3,499.00 ",15,Calentador de gas de rápida ignición con sistemas múltiples de seguridad y ahorro de combustible.
-PROD-121,Bicicleta Montañosa R29 21 Velocidades,Deportes," $4,299.00 ",20,"Bicicleta todoterreno con cuadro de aluminio,  frenos de disco y suspensión delantera."
-PROD-122,Caminadora Eléctrica Residencial,Deportes," $7,999.00 ",7,"Caminadora plegable con pantalla LCD para monitorear velocidad,  distancia y calorías quemadas."
-PROD-123,Juego de Mancuernas Ajustables 20kg,Deportes," $1,599.00 ",35,Kit de pesas con discos intercambiables y barra ergonómica para entrenamiento en casa.
-PROD-124,Tienda de Campaña Familiar 4 Personas,Deportes y Aire Libre," $1,299.00 ",25,Carpa impermeable con cubrtecho completo y fácil armado para campamentos.
-PROD-125,Patineta Eléctrica Scooter Urbano,Movilidad," $5,899.00 ",18,"Scooter con motor eléctrico,  velocidad máxima de 25 km/h y luces LED de seguridad nocturna."
-PROD-126,Taladro Atornillador Inalámbrico 20V,Herramientas," $1,699.00 ",40,"Taladro con batería de ion de litio,  velocidad variable y estuche con puntas y brocas."
-PROD-127,Hidrolavadora de Alta Presión,Herramientas," $2,299.00 ",20,Equipo de limpieza para exteriores con manguera de alta presión y boquilla ajustable.
-PROD-128,Caja de Herramientas Metálica 5 Charolas,Herramientas, $899.00 ,45,Organizador portátil de acero resistente con chapa de seguridad para herramienta manual.
-PROD-129,Juego de Sartenes Antiadherentes 5 Pzas,Cocina, $799.00 ,55,Sartenes de aluminio con revestimiento ecológico libre de PFOA y distribución uniforme de calor.
-PROD-131,Batería de Cocina de Acero Inoxidable 12 Pzas,Cocina," $2,499.00 ",22,Ollas y cacerolas con tapas de vidrio templado aptas para estufas de inducción y gas.
-PROD-132,Motocicleta Urbana 150cc,Motos y Movilidad," $32,999.00 ",5,"Motocicleta de transmisión manual de 5 velocidades, ideal para ciudad con rendimiento optimizado de combustible."
-PROD-133,Sala Modular Contemporánea 3 Piezas,Muebles y Hogar," $8,999.00 ",7,Sala esquinera tapizada en tactopiel de alta durabilidad con estructura de madera de pino reforzada.
-PROD-134,Colchón Matrimonial Ortopédico,Muebles y Hogar," $4,599.00 ",14,Colchón con tecnología de soporte lumbar avanzado y tela antiácaros para un descanso óptimo.
-PROD-135,Smartphone 128GB Cámara 50MP,Tecnología," $4,999.00 ",22,"Teléfono inteligente libre de fábrica con procesador octa-core, gran batería y pantalla FHD+."
-PROD-136,Licuadora de Alta Potencia 2 Velocidades,Línea Blanca y Electrónica, $899.00 ,40,Licuadora con vaso de vidrio resistente y cuchillas de acero inoxidable para molienda fina.
+PROD-101,"Pantalla Smart TV LED 55"" 4K UHD",Línea Blanca y Electrónica,"$8,499.00",18,"Televisor inteligente con resolución 4K,  HDR10 y aplicaciones de streaming integradas."
+PROD-102,Refrigerador Top Mount 11 Pies,Línea Blanca y Electrónica,"$7,299.00",12,Refrigerador ahorrador de energía con tecnología de enfriamiento rápido y amplio espacio interior.
+PROD-103,Lavadora Automática 20 kg,Línea Blanca y Electrónica,"$9,899.00",8,Lavadora de carga superior con ciclos automáticos de lavado y sistema de centrifugado avanzado.
+PROD-104,Estufa de Gas de 30 Pulgadas,Línea Blanca y Electrónica,"$6,499.00",10,"Estufa con encendido electrónico,  horno con ventana panorámica y quemadores de alta eficiencia."
+PROD-105,Consola de Videojuegos Next-Gen 1TB,Entretenimiento,"$11,999.00",25,Consola de última generación para juegos en máxima resolución y alta tasa de cuadros por segundo.
+PROD-106,Barra de Sonido Bluetooth con Subwoofer,Entretenimiento,"$2,899.00",30,Sistema de sonido envolvente con conectividad inalámbrica y puertos ópticos y auxiliares.
+PROD-107,"Laptop Gamer 15.6"" RTX 4050",Tecnología,"$21,999.00",15,"Laptop de alto rendimiento con tarjeta gráfica dedicada,  16GB RAM y procesador veloz para gaming y diseño."
+PROD-108,Smartphone 128GB Cámara Dual,Telefonía,"$5,499.00",45,Teléfono inteligente liberado con pantalla AMOLED de 6.5 pulgadas y batería de larga duración.
+PROD-109,Audífonos In-Ear Inalámbricos TWS,Telefonía,$899.00,70,Audífonos manos libres con estuche de carga portátil y cancelación pasiva de ruido.
+PROD-110,Reloj Inteligente Smartwatch Sport,Tecnología,"$1,299.00",50,"Monitor de actividad física,  ritmo cardíaco,  oxígeno en sangre y notificaciones de llamadas."
+PROD-111,Colchón Matrimonial Confort Plus,Muebles y Hogar,"$4,199.00",14,Colchón ortopédico con espuma de alta densidad y tela hipoalergénica para descanso óptimo.
+PROD-112,Sala Modular Esquinera en L,Muebles y Hogar,"$8,999.00",6,Sala tapizada en tactopiel de fácil limpieza con estructura de madera de pino reforzada.
+PROD-113,Comedor Minimalista 6 Sillas,Muebles y Hogar,"$6,799.00",9,Juego de comedor con mesa de madera MDF y sillas tapizadas ergonómicas.
+PROD-114,Ropero / Clóset de 3 Puertas con Espejo,Muebles y Hogar,"$5,199.00",11,"Clóset espacioso con cajones internos,  tubo para colgar ropa y espejo de cuerpo entero."
+PROD-115,Licuadora de Alta Potencia 10 Velocidades,Electrodomésticos,$999.00,40,Licuadora con vaso de vidrio resistente a impactos y cuchillas de acero inoxidable.
+PROD-116,Cafetera Automática para Expresso,Electrodomésticos,"$1,899.00",25,Cafetera con bomba de presión de 15 bares y espumador de leche integrado.
+PROD-117,Horno de Microondas 1.1 Pies Cúbicos,Electrodomésticos,"$2,199.00",30,"Microondas con panel digital,  opciones de cocinado rápido y función de descongelamiento."
+PROD-118,Plancha de Vapor con Suela Cerámica,Electrodomésticos,$599.00,50,"Plancha con golpe de vapor vertical,  sistema antigoteo y control de temperatura ajustable."
+PROD-119,"Ventilador de Pedestal Oscilante 18""",Hogar y Clima,$849.00,60,Ventilador de 3 velocidades con altura ajustable y rejilla de seguridad metálica.
+PROD-120,Calentador de Agua de Paso Instantáneo,Hogar y Clima,"$3,499.00",15,Calentador de gas de rápida ignición con sistemas múltiples de seguridad y ahorro de combustible.
+PROD-121,Bicicleta Montañosa R29 21 Velocidades,Deportes,"$4,299.00",20,"Bicicleta todoterreno con cuadro de aluminio,  frenos de disco y suspensión delantera."
+PROD-122,Caminadora Eléctrica Residencial,Deportes,"$7,999.00",7,"Caminadora plegable con pantalla LCD para monitorear velocidad,  distancia y calorías quemadas."
+PROD-123,Juego de Mancuernas Ajustables 20kg,Deportes,"$1,599.00",35,Kit de pesas con discos intercambiables y barra ergonómica para entrenamiento en casa.
+PROD-124,Tienda de Campaña Familiar 4 Personas,Deportes y Aire Libre,"$1,299.00",25,Carpa impermeable con cubrtecho completo y fácil armado para campamentos.
+PROD-125,Patineta Eléctrica Scooter Urbano,Movilidad,"$5,899.00",18,"Scooter con motor eléctrico,  velocidad máxima de 25 km/h y luces LED de seguridad nocturna."
+PROD-126,Taladro Atornillador Inalámbrico 20V,Herramientas,"$1,699.00",40,"Taladro con batería de ion de litio,  velocidad variable y estuche con puntas y brocas."
+PROD-127,Hidrolavadora de Alta Presión,Herramientas,"$2,299.00",20,Equipo de limpieza para exteriores con manguera de alta presión y boquilla ajustable.
+PROD-128,Caja de Herramientas Metálica 5 Charolas,Herramientas,$899.00,45,Organizador portátil de acero resistente con chapa de seguridad para herramienta manual.
+PROD-129,Juego de Sartenes Antiadherentes 5 Pzas,Cocina,$799.00,55,Sartenes de aluminio con revestimiento ecológico libre de PFOA y distribución uniforme de calor.
+PROD-131,Batería de Cocina de Acero Inoxidable 12 Pzas,Cocina,"$2,499.00",22,Ollas y cacerolas con tapas de vidrio templado aptas para estufas de inducción y gas.
+PROD-132,Motocicleta Urbana 150cc,Motos y Movilidad,"$32,999.00",5,"Motocicleta de transmisión manual de 5 velocidades, ideal para ciudad con rendimiento optimizado de combustible."
+PROD-133,Sala Modular Contemporánea 3 Piezas,Muebles y Hogar,"$8,999.00",7,Sala esquinera tapizada en tactopiel de alta durabilidad con estructura de madera de pino reforzada.
+PROD-134,Colchón Matrimonial Ortopédico,Muebles y Hogar,"$4,599.00",14,Colchón con tecnología de soporte lumbar avanzado y tela antiácaros para un descanso óptimo.
+PROD-135,Smartphone 128GB Cámara 50MP,Tecnología,"$4,999.00",22,"Teléfono inteligente libre de fábrica con procesador octa-core, gran batería y pantalla FHD+."
+PROD-136,Licuadora de Alta Potencia 2 Velocidades,Línea Blanca y Electrónica,$899.00,40,Licuadora con vaso de vidrio resistente y cuchillas de acero inoxidable para molienda fina.
