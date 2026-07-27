@@ -90,23 +90,19 @@ def cargar_documentos(data_dir: Path = DEFAULT_DATA_DIR):
 
     return docs_totales
 
-# Variable global para guardar el retriever en memoria una vez cargado
-_retriever_global = None
-
-def obtener_retriever():
-    global _retriever_global
-    if _retriever_global is None:
-        try:
-            logger.info("Construyendo retriever por primera vez bajo demanda...")
-            docs_splits = cargar_documentos()
-            modelo_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-            vectorstore = FAISS.from_documents(docs_splits, modelo_embeddings)
-            _retriever_global = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 8})
-            logger.info("Vectorstore FAISS y retriever inicializados exitosamente.")
-        except Exception as e:
-            logger.critical(f"Error crítico al construir el RAG: {e}")
-            raise e
-    return _retriever_global
+# Bloque principal de construcción del RAG con manejo de excepciones críticas
+try:
+    docs_splits = cargar_documentos()
+    # Instanciación del modelo de HuggingFace para la vectorización
+    modelo_embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # Construcción de la base de datos vectorial local con FAISS
+    vectorstore = FAISS.from_documents(docs_splits, modelo_embeddings)
+    # Configuración del retriever en modo similitud recuperando los 4 mejores chunks
+    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 8})
+    logger.info("Vectorstore FAISS y retriever inicializados exitosamente en rag.py.")
+except Exception as e:
+    logger.critical(f"Error crítico al construir el RAG: {e}")
+    raise e
 
 def busqueda_de_respuestas_RAG(pregunta: str):
     """
@@ -114,9 +110,7 @@ def busqueda_de_respuestas_RAG(pregunta: str):
     """
     try:
         logger.info(f"Ejecutando retriever para la pregunta: '{pregunta}'")
-        # Usamos la función inteligente para obtener el retriever sin saturar el arranque
-        retriever_actual = obtener_retriever()
-        documentos_encontrados = retriever_actual.invoke(pregunta)
+        documentos_encontrados = retriever.invoke(pregunta)
         return documentos_encontrados
     except Exception as e:
         logger.error(f"Error en busqueda_de_respuestas_RAG: {e}")
