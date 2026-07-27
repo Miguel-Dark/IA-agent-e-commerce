@@ -98,7 +98,7 @@ try:
     # Construcción de la base de datos vectorial local con FAISS
     vectorstore = FAISS.from_documents(docs_splits, modelo_embeddings)
     # Configuración del retriever en modo similitud recuperando los 4 mejores chunks
-    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 6})
+    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 8})
     logger.info("Vectorstore FAISS y retriever inicializados exitosamente en rag.py.")
 except Exception as e:
     logger.critical(f"Error crítico al construir el RAG: {e}")
