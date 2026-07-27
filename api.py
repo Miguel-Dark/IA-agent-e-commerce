@@ -31,10 +31,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Compilación única del grafo al arrancar el servidor (optimización de rendimiento)
-logger.info("Compilando grafo de LangGraph para la API...")
-grafo_app = construir_grafo()
-logger.info("¡Grafo listo para recibir peticiones HTTP!")
+# Variable global para guardar el grafo compilado en memoria bajo demanda
+_grafo_global = None
+
+def obtener_grafo():
+    global _grafo_global
+    if _grafo_global is None:
+        logger.info("Compilando grafo de LangGraph por primera vez bajo demanda...")
+        _grafo_global = construir_grafo()
+        logger.info("¡Grafo listo para recibir peticiones!")
+    return _grafo_global
 
 # Esquemas Pydantic para validación estricta de Entradas y Salidas JSON
 class ConsultaRequest(BaseModel):
@@ -59,9 +65,9 @@ async def chatear_con_ayesha(request: ConsultaRequest):
     try:
         logger.info(f"Petición recibida en /chat -> Pregunta: '{request.pregunta}'")
         
-        # Ejecución del grafo en un thread pool para mantener la asincronía de FastAPI
+        # Ejecución del grafo utilizando la función perezosa para ahorrar memoria al arrancar
         resultado = await run_in_threadpool(
-            grafo_app.invoke, 
+            obtener_grafo().invoke, 
             {
                 "pregunta": request.pregunta, 
                 "messages": [HumanMessage(content=request.pregunta)]
