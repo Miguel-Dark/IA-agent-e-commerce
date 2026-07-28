@@ -1,0 +1,33 @@
+# Git & Control de versiones
+.git
+.gitignore
+.github
+
+# Entornos virtuales y dependencias locales
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Caché y archivos compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Documentación y archivos multimedia locales
+README.md
+docs/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Configuración del sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
