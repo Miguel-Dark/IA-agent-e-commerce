@@ -1,7 +1,8 @@
 <p align="center">
   <img src="assets/AI-Agent-ServiceDesk.png" alt="Ayesha Service Desk Banner" width="100%">
 </p>
-# Challenge Alura Agente: Service Desk & E-commerce AI
+
+### Challenge Alura Agente: Service Desk & E-commerce AI ###
 
 ---
 
@@ -58,6 +59,20 @@ El proyecto está desarrollado en **Python** utilizando una arquitectura modular
 
 ---
 
+## 🖼️ Pruebas de Triaje Inteligente (Casos Especiales)
+
+* **Gestión de Información Incompleta (`PEDIR_INFO`):** Cuando el usuario realiza una consulta ambigua o le faltan datos críticos, el agente detecta la carencia de información y solicita amablemente los detalles necesarios para continuar.
+  <p align="center">
+    <img src="assets/captura-pedir-info.png" alt="Ayesha Pedir Info" width="85%">
+  </p>
+
+* **Derivación a Soporte Humano (`ABRIR_TICKET`):** Ante reclamaciones complejas, incidencias graves con un pedido o situaciones que escapan de la base de conocimiento automatizada, el triaje genera y deriva un ticket de atención.
+  <p align="center">
+    <img src="assets/captura-abrir-ticket.png" alt="Ayesha Abrir Ticket" width="85%">
+  </p>
+
+---
+
 ## 📂 Estructura del Proyecto
 * `config.py`: Módulo centralizado para la configuración de credenciales y la inicialización del LLM de Groq.
 * `rag.py`: Lógica de carga de documentos de la carpeta `content/`, fragmentación y construcción del Vectorstore FAISS con su retriever.
@@ -77,7 +92,7 @@ git clone https://github.com/Miguel-Dark/ia-agent-ecommerce.git
 cd ia-agent-ecommerce
 ```
 
-2. Crear y Activar un Entorno Virtual
+### 2. Crear y Activar un Entorno Virtual
 En Windows (CMD / PowerShell):
 
 python -m venv .venv
@@ -88,15 +103,15 @@ En Mac / Linux:
 python3 -m venv .venv
 source .venv/bin/activate
 
-3. Instalar Dependencias
+### 3. Instalar Dependencias
 pip install -r requirements.txt
 
-4. Configurar las Variables de Entorno
+### 4. Configurar las Variables de Entorno
 Crea un archivo .env en la raíz del proyecto y añade tu llave secreta de Groq:
 
 ```GROQ_API_KEY=tu_clave_de_groq_aqui```
 
-5. Ejecutar el Servidor con Uvicorn
+### 5. Ejecutar el Servidor con Uvicorn
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 
 Developed by **Miguel Ángel de la Cruz Lázaro** como parte del desafío final de la especialización de Backend e Inteligencia Artificial de Alura.
