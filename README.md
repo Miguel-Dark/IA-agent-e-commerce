@@ -17,6 +17,8 @@
 Agente de Inteligencia Artificial conversacional especializado en triaje inteligente, atención al cliente y recuperación automatizada de información (RAG) para la plataforma de comercio electrónico **Nexus Store**.
 
 ---
+* **💻 Repositorio del Frontend (HTML/CSS/JS):** [Ver código en GitHub](https://github.com/Miguel-Dark/nexus-store-chat) *(Despliegue web disponible próximamente)* 
+---
 
 ## 📹 Demostraciones del Proyecto en Video
 * **▶️ Demostración General de Agente (Botones de Acceso Rápido):** [Ver video en YouTube](https://youtu.be/FehVF4PfXEg)
@@ -95,23 +97,23 @@ cd ia-agent-ecommerce
 ### 2. Crear y Activar un Entorno Virtual
 En Windows (CMD / PowerShell):
 
-python -m venv .venv
-.venv\Scripts\activate
+```python -m venv .venv```
+```.venv\Scripts\activate```
 
-En Mac / Linux:
+## En Mac / Linux:
 
-python3 -m venv .venv
-source .venv/bin/activate
+```python3 -m venv .venv```
+```source .venv/bin/activate```
 
 ### 3. Instalar Dependencias
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 ### 4. Configurar las Variables de Entorno
-Crea un archivo .env en la raíz del proyecto y añade tu llave secreta de Groq:
+Crea un archivo ```.env``` en la raíz del proyecto y añade tu llave secreta de Groq:
 
 ```GROQ_API_KEY=tu_clave_de_groq_aqui```
 
 ### 5. Ejecutar el Servidor con Uvicorn
-uvicorn api:app --reload --host 0.0.0.0 --port 8000
+```uvicorn api:app --reload --host 0.0.0.0 --port 8000```
 
 Developed by **Miguel Ángel de la Cruz Lázaro** como parte del desafío final de la especialización de Backend e Inteligencia Artificial de Alura.
