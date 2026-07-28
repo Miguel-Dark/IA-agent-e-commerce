@@ -1,6 +1,25 @@
+<p align="center">
+  <img src="assets/AI-Agent-ServiceDesk.png" alt="Ayesha Service Desk Banner" width="100%">
+</p>
 # Challenge Alura Agente: Service Desk & E-commerce AI
 
+---
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/LangGraph-232F3E?style=for-the-badge&logo=databricks&logoColor=white" alt="LangGraph">
+  <img src="https://img.shields.io/badge/Groq-F46800?style=for-the-badge&logo=groq&logoColor=white" alt="Groq">
+  <img src="https://img.shields.io/badge/Status-Completed-success?style=for-the-badge" alt="Status">
+</p>
+
 Agente de Inteligencia Artificial conversacional especializado en triaje inteligente, atención al cliente y recuperación automatizada de información (RAG) para la plataforma de comercio electrónico **Nexus Store**.
+
+---
+
+## 📹 Demostraciones del Proyecto en Video
+* **▶️ Demostración General de Agente (Botones de Acceso Rápido):** [Ver video en YouTube](https://youtu.be/FehVF4PfXEg)
+* **▶️ Pruebas del Campo de Texto y Consultas Libres:** [Ver video en YouTube](https://youtu.be/zEmLty-oGag)
 
 ---
 
@@ -54,7 +73,7 @@ Sigue estos pasos para clonar y poner en marcha el proyecto en tu entorno local:
 
 ### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/tu-usuario/ia-agent-ecommerce.git
+git clone https://github.com/Miguel-Dark/ia-agent-ecommerce.git
 cd ia-agent-ecommerce
 ```
 
@@ -70,21 +89,14 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 3. Instalar Dependencias
-
 pip install -r requirements.txt
 
 4. Configurar las Variables de Entorno
 Crea un archivo .env en la raíz del proyecto y añade tu llave secreta de Groq:
 
-GROQ_API_KEY=tu_clave_de_groq_aqui
+```GROQ_API_KEY=tu_clave_de_groq_aqui```
 
 5. Ejecutar el Servidor con Uvicorn
-
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 
-La API estará corriendo localmente en http://localhost:8000 y puedes probar la documentación interactiva en http://localhost:8000/docs.
-
-☁️ Despliegue en la Nube (Deploy)
-El agente se encuentra desplegado y accesible mediante API pública, permitiendo su integración con interfaces de chat para la atención automatizada de usuarios en la nube.
-
-Desarrollado como parte del desafío final de la especialización de Backend e Inteligencia Artificial de Alura.
+Developed by **Miguel Ángel de la Cruz Lázaro** como parte del desafío final de la especialización de Backend e Inteligencia Artificial de Alura.
