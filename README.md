@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/Status-Completed-success?style=for-the-badge" alt="Status">
 </p>
 
-Agente de Inteligencia Artificial conversacional especializado en triaje inteligente, atención al cliente y recuperación automatizada de información (RAG) para la plataforma de comercio electrónico **Nexus Store**.
+Agente de Inteligencia Artificial conversacional especializado en triaje inteligente, atención al cliente y recuperación automatizada de información (RAG) para la plataforma de comercio electrónico simulada **Nexus Store**.
 
 ---
 * **🌐 Despliegue en Vivo (Frontend):** [Probar Aplicación Web en Render](https://ayesha-servicedesk-chat.onrender.com)
