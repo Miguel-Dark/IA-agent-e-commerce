@@ -20,7 +20,7 @@ Agente de Inteligencia Artificial conversacional especializado en triaje intelig
 ---
 * **🌐 Despliegue en Vivo (Frontend):** [Probar Aplicación Web en Render](https://ayesha-servicedesk-chat.onrender.com)
 * **⚡ API Base (Railway):** [Ver Servicio en Railway](https://ia-agent-e-commerce-production.up.railway.app)
-* **💬 Endpoint del Chat (API):** [Probar Endpoint `/chat`](https://ia-agent-e-commerce-production.up.railway.app/chat)
+* **📖 Documentación Interactiva (Swagger UI):** [Probar Endpoints en Swagger](https://ia-agent-e-commerce-production.up.railway.app/docs)
 * **💻 Repositorio del Frontend (HTML/Tailwind/JS):** [Ver código en GitHub](https://github.com/Miguel-Dark/nexus-store-chat) 
 ---
 
@@ -71,6 +71,11 @@ El proyecto está desarrollado con una arquitectura full-stack robusta y moderna
 * **Vista General de la Interfaz Web (Render):**
   <p align="center">
     <img src="assets/vista-general-interfazWeb.png" alt="Ayesha Service Desk Interface" width="85%">
+  </p>
+
+* **Documentación Interactiva de la API (Swagger UI / FastAPI):** Panel de control y pruebas en vivo desplegado en Railway, el cual detalla de forma automática los esquemas de Pydantic, los contratos de datos y permite interactuar directamente con los endpoints `/` y `/chat`.
+  <p align="center">
+    <img src="assets/swagger-documentacion.png" alt="Swagger UI Ayesha Service Desk" width="85%">
   </p>
 
 * **Gestión de Información Incompleta (`PEDIR_INFO`):** Cuando el usuario realiza una consulta ambigua o le faltan datos críticos, el agente detecta la carencia de información y solicita amablemente los detalles necesarios para continuar.
