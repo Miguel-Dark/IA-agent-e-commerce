@@ -70,7 +70,7 @@ El proyecto está desarrollado con una arquitectura full-stack robusta y moderna
 
 * **Vista General de la Interfaz Web (Render):**
   <p align="center">
-    <img src="assets/AI-Agent-ServiceDesk.png" alt="Ayesha Service Desk Interface" width="85%">
+    <img src="assets/vista-general-interfazWeb.png" alt="Ayesha Service Desk Interface" width="85%">
   </p>
 
 * **Gestión de Información Incompleta (`PEDIR_INFO`):** Cuando el usuario realiza una consulta ambigua o le faltan datos críticos, el agente detecta la carencia de información y solicita amablemente los detalles necesarios para continuar.
@@ -91,7 +91,11 @@ El proyecto está desarrollado con una arquitectura full-stack robusta y moderna
 * `graph.py`: Definición de los nodos del agente, triaje estructurado con Pydantic y las aristas condicionales de LangGraph.
 * `api.py`: Punto de entrada principal con configuración de FastAPI, CORS y ejecución del servidor.
 * `Dockerfile` & `.dockerignore`: Configuración para la contenerización y despliegue optimizado en la nube (Railway).
-* `requirements.txt`: Dependencias del proyecto.
+* `requirements.txt`: Archivo con el Stack Tecnológico Principal:
+  * **Core & API:** `fastapi` (0.115.0), `uvicorn` (0.30.6), `python-dotenv` (1.2.2)
+  * **Orquestación & IA:** `langgraph` (1.2.9), `langchain-core`, `langchain-groq` (1.1.3)
+  * **RAG & Vectores:** `faiss-cpu` (1.14.3), `langchain-community`, `langchain-text-splitters`, `langchain-huggingface`, `sentence-transformers` (5.6.0)
+  * **Procesamiento:** `pymupdf` (1.28.0) para PDFs, `pandas` (3.0.3) para CSVs y datos estructurados.
 
 ---
 
@@ -109,11 +113,13 @@ cd ia-agent-ecommerce
 En Windows (CMD / PowerShell):
 
 ```python -m venv .venv```
+
 ```.venv\Scripts\activate```
 
 ## En Mac / Linux:
 
 ```python3 -m venv .venv```
+
 ```source .venv/bin/activate```
 
 ### 3. Instalar Dependencias
@@ -126,6 +132,8 @@ Crea un archivo ```.env``` en la raíz del proyecto y añade tu llave secreta de
 
 ### 5. Ejecutar el Servidor con Uvicorn
 ```uvicorn api:app --reload --host 0.0.0.0 --port 8000```
+
+---
 
 Developed by **Miguel Ángel de la Cruz Lázaro** como parte del desafío final de la especialización de Backend e Inteligencia Artificial de Alura.
 
